@@ -8,6 +8,27 @@ const api = require('@actual-app/api');
 //                         Utility Functions
 //=============================================================================
 
+/**
+ * Convert a UTC datetime string to local date in YYYY-MM-DD format
+ * @param {string} utcDateString - ISO 8601 datetime string (e.g., from Up Bank API)
+ * @param {string} timezone - IANA timezone (e.g., 'Australia/Sydney', 'UTC'). Defaults to `TZ` env var or 'UTC'
+ * @returns {string} Date in YYYY-MM-DD format in the specified timezone
+ */
+function formatTransactionDate(utcDateString, timezone = null) {
+    const tz = timezone || process.env.TZ || 'UTC';
+  const date = new Date(utcDateString);
+  
+  // Use Intl.DateTimeFormat to convert UTC to user's timezone
+  const localDate = new Intl.DateTimeFormat('en-CA', {
+    timeZone: tz,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(date);
+  
+  return localDate; // Already in YYYY-MM-DD format from en-CA locale
+}
+
 
 async function AuthenticateUp() {
     const accessToken = process.env.UP_BANK_ACCESS_TOKEN;
@@ -194,7 +215,7 @@ async function uploadTransactions(accounts) {
                     if (targetPayee) {
                         const formattedTransaction = {
                             account: actualBudgetAccountId,
-                            date: new Date(transaction.attributes.settledAt || transaction.attributes.createdAt).toISOString().split('T')[0],
+                            date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
                             amount: Math.round(transaction.attributes.amount.value * 100),
                             payee: targetPayee.id,
                             payee_name: transaction.attributes.description || 'Unknown',
@@ -237,7 +258,7 @@ async function uploadTransactions(accounts) {
 
               const formattedTransaction = {
                 account: actualBudgetAccountId,
-                date: new Date(transaction.attributes.settledAt || transaction.attributes.createdAt).toISOString().split('T')[0],
+                date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
                 amount: Math.round(transaction.attributes.amount.value * 100),
                 payee_name: transaction.attributes.description || 'Unknown',
                 imported_id: transaction.id,
@@ -439,7 +460,7 @@ async function uploadWeeklyTransactions(weeklyTransactions) {
                     if (targetPayee) {
                         const formattedTransaction = {
                             account: actualBudgetAccountId,
-                            date: new Date(transaction.attributes.settledAt || transaction.attributes.createdAt).toISOString().split('T')[0],
+                            date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
                             amount: Math.round(transaction.attributes.amount.value * 100),
                             payee: targetPayee.id,
                             payee_name: transaction.attributes.description || 'Unknown',
@@ -482,7 +503,7 @@ async function uploadWeeklyTransactions(weeklyTransactions) {
 
               const formattedTransaction = {
                 account: actualBudgetAccountId,
-                date: new Date(transaction.attributes.settledAt || transaction.attributes.createdAt).toISOString().split('T')[0],
+                date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
                 amount: Math.round(transaction.attributes.amount.value * 100),
                 payee_name: transaction.attributes.description || 'Unknown',
                 imported_id: transaction.id,
