@@ -215,7 +215,7 @@ async function uploadTransactions(accounts) {
                     if (targetPayee) {
                         const formattedTransaction = {
                             account: actualBudgetAccountId,
-                            date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
+                            date: formatTransactionDate(transaction.attributes.createdAt || transaction.attributes.settledAt),
                             amount: Math.round(transaction.attributes.amount.value * 100),
                             payee: targetPayee.id,
                             payee_name: transaction.attributes.description || 'Unknown',
@@ -258,7 +258,7 @@ async function uploadTransactions(accounts) {
 
               const formattedTransaction = {
                 account: actualBudgetAccountId,
-                date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
+                date: formatTransactionDate(transaction.attributes.createdAt || transaction.attributes.settledAt),
                 amount: Math.round(transaction.attributes.amount.value * 100),
                 payee_name: transaction.attributes.description || 'Unknown',
                 imported_id: transaction.id,
@@ -460,7 +460,7 @@ async function uploadWeeklyTransactions(weeklyTransactions) {
                     if (targetPayee) {
                         const formattedTransaction = {
                             account: actualBudgetAccountId,
-                            date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
+                            date: formatTransactionDate(transaction.attributes.createdAt || transaction.attributes.settledAt),
                             amount: Math.round(transaction.attributes.amount.value * 100),
                             payee: targetPayee.id,
                             payee_name: transaction.attributes.description || 'Unknown',
@@ -503,7 +503,7 @@ async function uploadWeeklyTransactions(weeklyTransactions) {
 
               const formattedTransaction = {
                 account: actualBudgetAccountId,
-                date: formatTransactionDate(transaction.attributes.settledAt || transaction.attributes.createdAt),
+                date: formatTransactionDate(transaction.attributes.createdAt || transaction.attributes.settledAt),
                 amount: Math.round(transaction.attributes.amount.value * 100),
                 payee_name: transaction.attributes.description || 'Unknown',
                 imported_id: transaction.id,
